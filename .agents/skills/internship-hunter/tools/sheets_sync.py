@@ -79,8 +79,32 @@ def fetch_applied(config: dict):
         try:
             ws = get_worksheet(config)
             if ws:
-                records = ws.get_all_records()
-                return records
+                all_values = ws.get_all_values()
+                # Find header row dynamically
+                header_idx = -1
+                for i, row in enumerate(all_values[:20]):
+                    lowered = [str(cell).strip().lower() for cell in row]
+                    if any("company" in h for h in lowered):
+                        header_idx = i
+                        break
+
+                if header_idx != -1:
+                    headers = [str(cell).strip() for cell in all_values[header_idx]]
+                    records = []
+                    for r in all_values[header_idx + 1:]:
+                        if any(r):
+                            row_dict = {}
+                            for col_i, h in enumerate(headers):
+                                if h and col_i < len(r):
+                                    row_dict[h] = r[col_i]
+                            if row_dict.get("Company Name") or row_dict.get("Company") or row_dict.get("company"):
+                                records.append(row_dict)
+                    save_local_cache(records)
+                    return records
+                else:
+                    records = ws.get_all_records()
+                    save_local_cache(records)
+                    return records
         except Exception as e:
             sys.stderr.write(f"Google Sheets sync warning ({e}). Falling back to local cache.\n")
     return load_local_cache()
@@ -91,11 +115,11 @@ def is_duplicate(company: str, role: str, config: dict) -> bool:
     role_clean = role.strip().lower()
     
     for row in applied:
-        c = str(row.get("Company", row.get("company", ""))).strip().lower()
+        c = str(row.get("Company", row.get("Company Name", row.get("company", "")))).strip().lower()
         r = str(row.get("Role", row.get("role", ""))).strip().lower()
-        if company_clean in c or c in company_clean:
+        if company_clean and c and (company_clean in c or c in company_clean):
             # Check role similarity
-            if any(term in r for term in ["intern", "co-op", "swe", "software", "engineer"]):
+            if not role_clean or any(term in r for term in ["intern", "co-op", "swe", "software", "engineer"]):
                 return True
     return False
 
