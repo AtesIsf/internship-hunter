@@ -15,7 +15,8 @@ An autonomous, multi-agent skill suite designed for **Antigravity**, **Claude Co
   - **Stage 2A (ATS Scanner Subagent)**: Evaluates hard keyword coverage, entity density, and parsing hygiene.
   - **Stage 2B (Harsh Recruiter Subagent)**: Adopts a ruthless, cynical senior hiring manager persona (10-second scan mindset) to tear apart passive voice, vague metrics, and fluff.
   - **Stage 3 (Final Revisor Agent)**: Adjudicates feedback, tightens copy, and compiles a pixel-perfect **strict 1-page PDF** via **Typst**.
-  - **Application Q&A Kit**: Generates tailored answers for application prompts ("Why this company?", "Challenging technical project").
+  - **Stage 4 (Review & Handoff)**: Delivers direct application link and Q&A kit (`answers.md`) for quick 1-click submission.
+  - **Stage 5 (Google Sheets Sync)**: Records to the Google Sheets tracker with `--status "Applied"` once the candidate confirms submission.
 
 ---
 
@@ -40,7 +41,9 @@ flowchart TD
     M --> N[tools/compile_resume.sh]
     N --> O[output/company/resume.pdf - Strict 1 Page]
     M --> P[output/company/answers.md - Q&A Kit]
-    O & P --> F
+    O & P --> Q[Candidate Review & Direct Apply]
+    Q -->|User Confirms 'Applied'| R[Record to Google Sheet]
+    R --> F
 ```
 
 ---

@@ -34,7 +34,9 @@ flowchart TD
     M --> N[tools/compile_resume.sh]
     N --> O[output/company/resume.pdf - Strict 1 Page]
     M --> P[output/company/answers.md - Q&A Kit]
-    O & P --> F
+    O & P --> Q[User Review & Application Handoff]
+    Q -->|User Confirms 'Applied'| R[Record to Google Sheet]
+    R --> F
 ```
 
 ---
@@ -66,7 +68,7 @@ flowchart TD
 ---
 
 ### Workflow 2: Google Sheets Synchronization & Deduplication
-**When to run**: Before recommending new jobs and after finalizing a tailored application.
+**When to run**: Before recommending new jobs (deduplication) and strictly after the user confirms an application was submitted.
 
 1. **Deduplication Check**:
    - Before presenting an internship to the user, run:
@@ -75,15 +77,16 @@ flowchart TD
      ```
    - If exit code is 2 (`DUPLICATE`), skip this role to prevent duplicate applications.
 
-2. **Recording Completed Applications**:
-   - Once a resume is tailored and reviewed, record it into the tracker:
+2. **Recording Confirmed Applications**:
+   - Never record to Google Sheets prematurely during drafting or compilation.
+   - Only after the user inspects the PDF, visits the portal, and confirms application submission (e.g. *"Applied"*), log the entry:
      ```bash
      python3 .agents/skills/internship-hunter/tools/sheets_sync.py --append \
        --company "<Company>" \
        --role "<Role>" \
        --location "<Location>" \
        --url "<JobURL>" \
-       --status "Tailored" \
+       --status "Applied" \
        --score "<Score>" \
        --resume-path "output/<company>/resume.pdf"
      ```
@@ -143,7 +146,28 @@ Save both critiques into `output/<company>_<role>/feedback.md`.
   ```
 - If the tool warns that the page budget was exceeded, adjust line spacing and word count until it is **strictly 1 single page**.
 - Generate `output/<company>_<role>/answers.md` containing pre-crafted answers for standard application questions ("Why this company?", "Challenging project").
-- Sync the application to Google Sheets.
+
+#### Stage 4: User Review & Application Handoff
+- Present the candidate with:
+  1. The compiled PDF path (`output/<company>_<role>/resume.pdf`) for inspection.
+  2. The direct application URL.
+  3. Key application highlights and pre-drafted answers from `output/<company>_<role>/answers.md`.
+- Prompt the user to open the link, apply (using their preferred autofill tool/extension), and reply when submitted.
+
+#### Stage 5: Post-Application Google Sheets Sync & Batch Advancement
+- When the user confirms application submission (*"Applied"*):
+  1. Append the record to Google Sheets with `--status "Applied"`:
+     ```bash
+     python3 .agents/skills/internship-hunter/tools/sheets_sync.py --append \
+       --company "<Company>" \
+       --role "<Role>" \
+       --location "<Location>" \
+       --url "<JobURL>" \
+       --status "Applied" \
+       --score "<Score>" \
+       --resume-path "output/<company>_<role>/resume.pdf"
+     ```
+  2. If executing a multi-role queue or batch loop, immediately proceed to the next target role and start Stage 1 for the next opportunity.
 
 ---
 
