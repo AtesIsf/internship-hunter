@@ -79,13 +79,8 @@ The agent will activate the `internship-hunter` skill, read your resume, pitch m
 
 To prevent duplicate applications and automatically track tailored resumes:
 
-1. **Create a Google Cloud Project & Service Account**:
-   - Go to the [Google Cloud Console](https://console.cloud.google.com/).
-   - Create a project and enable the **Google Sheets API** and **Google Drive API**.
-   - Create a **Service Account**, generate a JSON key, and save it as `credentials.json` in the project root.
-2. **Share Your Google Sheet**:
-   - Open your internship tracking Google Sheet.
-   - Click **Share** and add your Service Account email (e.g., `internship-bot@project-id.iam.gserviceaccount.com`) as an **Editor**.
+1. **Obtain Service Account Credentials**: Follow the [Step-by-Step Appendix](#-appendix-step-by-step-google-sheets-setup-guide) to generate a free `credentials.json` file.
+2. **Share Your Google Sheet**: Add your Service Account email as an **Editor** on your tracking spreadsheet.
 3. **Configure `data/config.yaml`**:
    ```yaml
    google_sheets:
@@ -98,6 +93,7 @@ To prevent duplicate applications and automatically track tailored resumes:
    ```bash
    ./.venv/bin/python3 .agents/skills/internship-hunter/tools/sheets_sync.py --test-connection
    ```
+*(If disabled or skipped, the system automatically falls back to local tracking in `data/applications.json` with zero configuration).*
 
 ---
 
@@ -141,6 +137,62 @@ Your personal data is protected by design:
 - All `*.pdf` files, `data/profile.yaml`, and `output/` folders are ignored in `.gitignore`.
 - API keys, `credentials.json`, and service account tokens are ignored.
 - The agent adheres to `.agents/rules/resume_integrity.md`, ensuring it never fabricates skills, dates, or experiences.
+
+---
+
+## 📖 Appendix: Step-by-Step Google Sheets Setup Guide
+
+<details>
+<summary><b>Click to expand: Complete Click-by-Click GCP Setup Walkthrough</b></summary>
+
+<br>
+
+### Part A: Generate the Service Account Key
+1. Open the [Google Cloud Console](https://console.cloud.google.com/) and log in with your Google account.
+2. At the top left (next to the Google Cloud logo), click the **Select a project** dropdown $\rightarrow$ click **New Project**.
+   - Name it anything (e.g., `internship-tracker`) and click **Create**.
+3. In the top search bar, search for **Google Sheets API** $\rightarrow$ click on it $\rightarrow$ click **Enable**.
+4. In the top search bar, search for **Google Drive API** $\rightarrow$ click on it $\rightarrow$ click **Enable**.
+5. In the left navigation menu, go to **IAM & Admin** $\rightarrow$ **Service Accounts** (or search "Service Accounts" in the top bar).
+6. Click **+ Create Service Account** at the top:
+   - **Service account name**: `sheets-bot`
+   - Click **Done** (optional permission steps can be skipped).
+7. In the Service Accounts list, click on the newly created service account email (it looks like `sheets-bot@your-project-id.iam.gserviceaccount.com`).
+8. Go to the **Keys** tab at the top $\rightarrow$ click **Add Key** $\rightarrow$ **Create new key**.
+9. Select **JSON** and click **Create**.
+   - A `.json` file will automatically download to your computer.
+
+### Part B: Place the Key in Your Project
+Move and rename the downloaded key to `credentials.json` in the root of this project:
+```bash
+# Example (adjust if downloaded to a different folder):
+mv ~/Downloads/*.json /home/ates-isf/Projects/internship-hunter/credentials.json
+```
+*(Protected by `.gitignore`: this file will never be committed).*
+
+### Part C: Share Your Google Sheet with the Bot
+1. Open your internship tracking Google Sheet in your browser.
+2. Click the green **Share** button (top right).
+3. Paste the **Service Account email** (`sheets-bot@your-project-id.iam.gserviceaccount.com`).
+4. Set permission to **Editor** and click **Send** (uncheck "Notify people" if prompted).
+
+### Part D: Configure `data/config.yaml`
+1. Copy the Spreadsheet ID from your Google Sheet URL:
+   `https://docs.google.com/spreadsheets/d/`**`1a2b3c4d5e6f7g8h9i0_SAMPLE_ID`**`/edit`
+2. Update `data/config.yaml`:
+   ```yaml
+   google_sheets:
+     enabled: true
+     spreadsheet_id: "1a2b3c4d5e6f7g8h9i0_SAMPLE_ID"
+     worksheet_name: "Sheet1" # Tab name at the bottom of your sheet
+     credentials_path: "credentials.json"
+   ```
+3. Test your connection:
+   ```bash
+   ./.venv/bin/python3 .agents/skills/internship-hunter/tools/sheets_sync.py --test-connection
+   ```
+
+</details>
 
 ---
 
