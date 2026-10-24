@@ -1,6 +1,6 @@
 # 🎯 AI Internship Hunter & Multi-Agent Resume Refinery
 
-An autonomous, multi-agent skill suite designed for **Antigravity** (and agentic coding assistants) to discover, filter, critique, and tailor applications for tech internships.
+An autonomous, multi-agent skill suite designed for **Antigravity**, **Claude Code**, **OpenAI Codex / ChatGPT CLI**, **Cursor**, **Windsurf**, and any agentic coding assistant to discover, filter, critique, and tailor applications for tech internships.
 
 ---
 
@@ -63,15 +63,35 @@ cp /path/to/my_resume.pdf ./resume.pdf
 ```
 *(Don't worry: `*.pdf`, `credentials.json`, and personal data are strictly ignored in `.gitignore` and will never be committed to Git).*
 
-### 3. Launch Antigravity
-Start your session in the workspace:
-```bash
-agy
-```
-Then prompt the agent:
+### 3. Launch Your Preferred Agent
+
+This project is provider-agnostic. All workflows and personas are written in standard markdown and open-source CLI tools:
+
+- **Google Antigravity (`agy`)**:
+  ```bash
+  agy
+  ```
+  *(Antigravity automatically discovers `.agents/skills/internship-hunter` on startup).*
+
+- **Claude Code (`claude`)**:
+  ```bash
+  claude
+  ```
+  *(Claude Code automatically loads instructions from `CLAUDE.md`).*
+
+- **Cursor / Windsurf**:
+  Open this folder in Cursor or Windsurf. The IDE automatically loads `.cursorrules`.
+
+- **OpenAI / Codex / Custom Agents**:
+  Point your agent to the runbook at `.agents/skills/internship-hunter/SKILL.md`.
+
+---
+
+### 4. Prompt the Agent
+Once your agent is running, kick off the workflow:
 > *"I placed my `resume.pdf` in the workspace. Ingest it, suggest my best-matching internship roles, and let's configure my preferences."*
 
-The agent will activate the `internship-hunter` skill, read your resume, pitch matching roles, and guide you through target countries and visa sponsorship preferences.
+The agent will read your resume, pitch matching roles, and guide you through target countries and visa sponsorship preferences.
 
 ---
 

@@ -1,0 +1,10 @@
+# AI Internship Hunter & Multi-Agent Resume Refinery
+
+Follow the master skill runbook at:
+.agents/skills/internship-hunter/SKILL.md
+
+Key Rules:
+1. Always adhere to .agents/rules/resume_integrity.md (never hallucinate skills, metrics, or experiences).
+2. For resume compilation, use .agents/skills/internship-hunter/tools/compile_resume.sh to enforce strict 1-page budget.
+3. For Google Sheets deduplication and logging, use .agents/skills/internship-hunter/tools/sheets_sync.py.
+4. For the 3-stage tailoring loop, consult the prompts in .agents/skills/internship-hunter/prompts/.
