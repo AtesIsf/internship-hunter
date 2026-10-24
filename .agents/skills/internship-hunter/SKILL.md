@@ -144,3 +144,18 @@ Save both critiques into `output/<company>_<role>/feedback.md`.
 - If the tool warns that the page budget was exceeded, adjust line spacing and word count until it is **strictly 1 single page**.
 - Generate `output/<company>_<role>/answers.md` containing pre-crafted answers for standard application questions ("Why this company?", "Challenging project").
 - Sync the application to Google Sheets.
+
+---
+
+### Workflow 5: Profile Maintenance & Incremental Updates
+**When to run**: When the user gains new experiences, ships a project, or uploads a revised PDF.
+
+1. **Conversational Incremental Additions**:
+   - When the user says e.g., *"I just added a new project / started a new role..."*, update `data/profile.yaml` directly.
+   - Retain all historical projects and metrics in `data/profile.yaml` so the Tailor Agent can choose from an expanding inventory of accomplishments.
+
+2. **Full Resume PDF Refresh**:
+   - If the user replaces `resume.pdf` with a new version, re-read the file.
+   - Update `data/profile.yaml` while preserving any custom notes or user-refined metrics.
+   - Keep `data/config.yaml` (roles, countries, sponsorship, Google Sheet settings) persistent across updates.
+
