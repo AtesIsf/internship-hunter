@@ -11,6 +11,13 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 
+# Auto-detect local virtualenv site-packages if running with system python
+repo_root = Path(__file__).resolve().parents[4]
+venv_site_packages = list(repo_root.glob(".venv/lib/python*/site-packages"))
+for sp in venv_site_packages:
+    if str(sp) not in sys.path:
+        sys.path.insert(0, str(sp))
+
 # Optional YAML loader
 try:
     import yaml
