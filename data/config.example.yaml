@@ -1,0 +1,59 @@
+# Internship Hunter Configuration
+# Defines search preferences, filters, and Google Sheets integration settings.
+
+candidate_preferences:
+  # Confirmed target roles (e.g. Software Engineer, Machine Learning, Systems)
+  target_roles:
+    - "Software Engineering Intern"
+    - "Backend Engineering Intern"
+    - "Systems / Infrastructure Intern"
+    - "Machine Learning Intern"
+
+  # Target locations / countries
+  target_countries:
+    - "United States"
+    - "Remote"
+    - "Canada"
+
+  # Work authorization & visa sponsorship
+  # Options:
+  # - "Requires Sponsorship" (needs H-1B / J-1 sponsorship)
+  # - "F-1 OPT/CPT Eligible" (eligible for student work authorization, may need future sponsorship)
+  # - "Authorized Without Sponsorship" (US Citizen, Permanent Resident, etc.)
+  work_authorization: "F-1 OPT/CPT Eligible"
+
+  # Graduation term & internship season
+  target_terms:
+    - "Summer 2025"
+    - "Fall 2025"
+    - "Summer 2026"
+  graduation_date: "May 2026"
+
+  # Minimum match score (0-100) to recommend or tailor
+  min_match_score: 65
+
+google_sheets:
+  # Enable Google Sheets sync for deduplication and application tracking
+  enabled: false
+
+  # The unique ID from your Google Sheet URL:
+  # https://docs.google.com/spreadsheets/d/<SPREADSHEET_ID>/edit
+  spreadsheet_id: "YOUR_GOOGLE_SHEET_ID_HERE"
+
+  # The name of the worksheet/tab (e.g. "Applications" or "Sheet1")
+  worksheet_name: "Applications"
+
+  # Path to Google Service Account JSON key or OAuth client credentials
+  # Keep this OUT of git! (already in .gitignore)
+  credentials_path: "credentials.json"
+
+  # Column mapping for your spreadsheet headers (case-insensitive)
+  columns:
+    company: "Company"
+    role: "Role"
+    location: "Location"
+    url: "Application Link"
+    status: "Status"
+    date_applied: "Date"
+    match_score: "Match Score"
+    notes: "Notes"

@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Binaries and local tools
+bin/
+
+
+# Sensitive Personal Data & Resumes
+*.pdf
+data/profile.yaml
+data/config.yaml
+data/applications.json
+resume.pdf
+base_resume.pdf
+
+# Google API Credentials & Secrets
+*credentials*.json
+*service_account*.json
+.env
+.env.*
+client_secret*.json
+token.json
+token.pickle
+
+# Application Outputs & Generated Files
+output/
+scratch/
+.cache/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

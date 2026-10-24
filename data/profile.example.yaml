@@ -1,0 +1,72 @@
+# Candidate Master Profile (Single Source of Truth)
+# Generated from resume.pdf by pdf_ingest.py or edited manually.
+
+contact:
+  name: "Jane Doe"
+  email: "jane.doe@university.edu"
+  phone: "(555) 123-4567"
+  location: "New York, NY"
+  github: "github.com/janedoe"
+  linkedin: "linkedin.com/in/janedoe"
+  website: "janedoe.dev"
+
+education:
+  - institution: "Top Tech University"
+    degree: "B.S. in Computer Science, Minor in Mathematics"
+    location: "New York, NY"
+    graduation_date: "May 2026"
+    gpa: "3.85 / 4.0"
+    coursework:
+      - "Data Structures & Algorithms"
+      - "Distributed Systems"
+      - "Operating Systems"
+      - "Database Systems"
+      - "Computer Networks"
+
+skills:
+  languages:
+    - "Python"
+    - "C++"
+    - "Go"
+    - "TypeScript"
+    - "SQL"
+  frameworks_and_libraries:
+    - "FastAPI"
+    - "React"
+    - "PyTorch"
+    - "gRPC"
+    - "Docker"
+  tools_and_infrastructure:
+    - "Linux"
+    - "Git"
+    - "Kubernetes"
+    - "PostgreSQL"
+    - "Redis"
+    - "AWS (S3, EC2, Lambda)"
+
+experience:
+  - company: "FinTech Innovations"
+    role: "Software Engineering Intern"
+    location: "New York, NY"
+    start_date: "June 2024"
+    end_date: "August 2024"
+    bullets:
+      - "Engineered high-throughput event processing pipeline using Python, Redis Streams, and PostgreSQL, processing 1.5M transactions/day with sub-50ms latency."
+      - "Reduced database query latency by 42% by redesigning indexing strategies and implementing a Redis write-through caching layer."
+      - "Constructed automated CI/CD pipeline with GitHub Actions and Docker, reducing team deployment cycle time from 35 minutes to 8 minutes."
+
+projects:
+  - name: "DistCache - Distributed In-Memory Cache"
+    tech_stack: ["Go", "gRPC", "Raft", "Docker"]
+    links: "github.com/janedoe/distcache"
+    bullets:
+      - "Built a distributed fault-tolerant key-value store in Go implementing the Raft consensus algorithm for node election and log replication."
+      - "Designed consistent hashing ring with virtual nodes to balance partitions evenly across dynamic clusters with zero downtime re-sharding."
+      - "Benchmarked with custom load generator; sustained 85,000 requests/sec across a 5-node cluster with 99.9% consistency under network partitions."
+
+  - name: "EdgeVision - Real-Time Inference Pipeline"
+    tech_stack: ["Python", "PyTorch", "FastAPI", "ONNX"]
+    links: "github.com/janedoe/edgevision"
+    bullets:
+      - "Trained and quantized computer vision models using PyTorch and ONNX Runtime, reducing model size by 65% with <1% accuracy loss."
+      - "Deployed asynchronous REST microservice with FastAPI and Celery handling 400 concurrent video frame streams."
