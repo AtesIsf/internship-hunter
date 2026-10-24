@@ -145,4 +145,4 @@ Your personal data is protected by design:
 ---
 
 ## 📜 License
-MIT License. See [LICENSE](LICENSE) for details.
+GNU General Public License v3.0 (GPLv3). See [LICENSE](LICENSE) for details.
