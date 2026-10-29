@@ -11,12 +11,12 @@ An autonomous, multi-agent skill suite designed for **Antigravity**, **Claude Co
 - 📊 **Google Sheets Sync & Deduplication**: Integrates directly with your Google Sheets tracker to read past applications and ensure you **never duplicate apply**. Automatically logs newly tailored applications with match scores and PDF links.
 - 🔍 **Semantic Internship Search**: Discovers and filters active internship postings based on your target roles, graduation year, target countries, and visa sponsorship requirements.
 - 🎭 **Actor-Critic Tailoring Loop**:
-  - **Stage 1 (Tailor Agent)**: Synthesizes a role-specific Typst resume draft using the Google XYZ formula (`Accomplished [X] as measured by [Y] by doing [Z]`).
-  - **Stage 2A (ATS Scanner Subagent)**: Evaluates hard keyword coverage, entity density, and parsing hygiene.
-  - **Stage 2B (Harsh Recruiter Subagent)**: Adopts a ruthless, cynical senior hiring manager persona (10-second scan mindset) to tear apart passive voice, vague metrics, and fluff.
-  - **Stage 3 (Final Revisor Agent)**: Adjudicates feedback, tightens copy, and compiles a pixel-perfect **strict 1-page PDF** via **Typst**.
-  - **Stage 4 (Review & Handoff)**: Delivers direct application link and Q&A kit (`answers.md`) for quick 1-click submission.
-  - **Stage 5 (Google Sheets Sync)**: Records to the Google Sheets tracker with `--status "Applied"` once the candidate confirms submission.
+  - **Stage 1 (Tailor Agent)**: Synthesizes a role-specific draft (`output/resume.typ`) using the industry-standard **Jake's Resume** template and Google's XYZ formula (`Accomplished [X] as measured by [Y] by doing [Z]`).
+  - **Stage 2A (ATS Scanner Subagent)**: Evaluates hard keyword coverage, entity density, and single-column parsing hygiene.
+  - **Stage 2B (Harsh Recruiter Subagent)**: Adopts a ruthless, cynical senior hiring manager persona (10-second scan mindset, r/EngineeringResumes & Harvard rubric) to audit passive voice, vague metrics, and fluff into `output/feedback.md`.
+  - **Stage 3 (Final Revisor Agent)**: Adjudicates feedback, tightens copy, and compiles a single **strict 1-page PDF** (`output/resume.pdf`) via **Typst**.
+  - **Stage 4 (Review & Handoff)**: Delivers direct application link, the single result PDF, and Q&A kit (`output/answers.md`) for quick submission.
+  - **Stage 5 (Google Sheets Sync)**: Records to the Google Sheets tracker with `--status "Applied"` and `--resume-path "output/resume.pdf"` once the candidate confirms submission.
 
 ---
 
@@ -24,25 +24,26 @@ An autonomous, multi-agent skill suite designed for **Antigravity**, **Claude Co
 
 ```mermaid
 flowchart TD
-    A[resume.pdf] --> B[Direct Ingest & Semantic Profile]
-    B --> C[Agent Role Matching & Guided Onboarding]
-    C --> D[(data/config.yaml & data/profile.yaml)]
+    A["resume.pdf"] --> B["Direct Ingest & Semantic Profile"]
+    B --> C["Agent Role Matching & Guided Onboarding"]
+    C --> D[("data/config.yaml & data/profile.yaml")]
     
-    E[Your Google Sheet] <--> F[tools/sheets_sync.py]
+    E["Your Google Sheet"] <--> F["tools/sheets_sync.py"]
     
-    G[Internship Trackers & Web Search] --> H[Semantic Filtering & Scoring]
+    G["Internship Trackers & Web Search"] --> H["Semantic Filtering & Scoring"]
     D & F --> H
-    H --> I[Target Opportunities Queue]
+    H --> I["Target Opportunities Queue"]
     
-    I --> J[Stage 1: Tailor Agent - Draft Typst Source]
-    J --> K[Stage 2A: ATS Scanner Subagent]
-    J --> L[Stage 2B: Harsh Recruiter Subagent]
-    K & L --> M[Stage 3: Final Revisor Agent]
-    M --> N[tools/compile_resume.sh]
-    N --> O[output/company/resume.pdf - Strict 1 Page]
-    M --> P[output/company/answers.md - Q&A Kit]
-    O & P --> Q[Candidate Review & Direct Apply]
-    Q -->|User Confirms 'Applied'| R[Record to Google Sheet]
+    I --> J["Stage 1: Tailor Agent - Draft in Jake's Template (output/resume.typ)"]
+    J --> K["Stage 2A: ATS Scanner Subagent"]
+    J --> L["Stage 2B: Harsh Recruiter Subagent"]
+    K & L --> S["output/feedback.md - Dual Critique"]
+    S & D --> M["Stage 3: Final Revisor Agent"]
+    M --> N["tools/compile_resume.sh"]
+    N --> O["output/resume.pdf - Strict 1 Page (Jake's Format)"]
+    M --> P["output/answers.md - Q&A Kit"]
+    O & P --> Q["Candidate Review & Direct Apply"]
+    Q -->|"User Confirms 'Applied'"| R["Record to Google Sheet"]
     R --> F
 ```
 
@@ -136,13 +137,13 @@ To prevent duplicate applications and automatically track tailored resumes:
 │           │   ├── tailor_strategy.md     # Stage 1: STAR/XYZ tailoring strategy
 │           │   └── revision_strategy.md   # Stage 3: Polish and Q&A strategy
 │           ├── templates/
-│           │   └── resume_template.typ    # Clean ATS-optimized Typst resume template
+│           │   └── resume_template.typ    # Industry-standard Jake's Resume Typst template
 │           ├── tools/
 │           │   ├── compile_resume.sh      # Typst compiler with strict 1-page check
 │           │   └── sheets_sync.py         # Google Sheets I/O & deduplication tool
 │           └── references/
-│               ├── ats_guidelines.md      # ATS formatting standards
-│               └── recruiter_rubric.md    # Harsh recruiter scoring criteria
+│               ├── ats_guidelines.md      # ATS formatting standards & parsing guidelines
+│               └── recruiter_rubric.md    # Recruiter scoring criteria (Google XYZ, Harvard, r/EngineeringResumes)
 ├── data/
 │   ├── profile.example.yaml               # Reference schema for candidate profile
 │   └── config.example.yaml                # Reference schema for preferences & filters

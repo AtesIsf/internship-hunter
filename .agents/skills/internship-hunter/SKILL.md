@@ -9,7 +9,7 @@ description: >-
 
 # Internship Hunter & Multi-Agent Resume Refinery
 
-This skill equips you with the complete operational workflow to help candidates discover, filter, tailor, and apply to high-probability tech internships.
+This skill equips you with the complete operational workflow to help candidates discover, filter, tailor, and apply to high-probability tech internships using industry-standard engineering resume standards.
 
 ---
 
@@ -17,25 +17,26 @@ This skill equips you with the complete operational workflow to help candidates 
 
 ```mermaid
 flowchart TD
-    A[User resume.pdf] --> B[1. Direct Reading & Profile Synthesis]
-    B --> C[2. Proactive Role Pitching & Guided Onboarding]
-    C --> D[(data/config.yaml & data/profile.yaml)]
+    A["User resume.pdf"] --> B["1. Direct Reading & Profile Synthesis"]
+    B --> C["2. Proactive Role Pitching & Guided Onboarding"]
+    C --> D[("data/config.yaml & data/profile.yaml")]
     
-    E[User Google Sheet] <--> F[tools/sheets_sync.py]
+    E["User Google Sheet"] <--> F["tools/sheets_sync.py"]
     
-    G[Internship Trackers & Web Search] --> H[3. Semantic Filtering & Scoring]
+    G["Internship Trackers & Web Search"] --> H["3. Semantic Filtering & Scoring"]
     D & F --> H
-    H --> I[High-Match Target Opportunities]
+    H --> I["High-Match Target Opportunities"]
     
-    I --> J[Stage 1: Tailor Agent - Draft Typst Source]
-    J --> K[Stage 2A: ATS Scanner Subagent]
-    J --> L[Stage 2B: Harsh Recruiter Subagent]
-    K & L --> M[Stage 3: Final Revisor Agent]
-    M --> N[tools/compile_resume.sh]
-    N --> O[output/company/resume.pdf - Strict 1 Page]
-    M --> P[output/company/answers.md - Q&A Kit]
-    O & P --> Q[User Review & Application Handoff]
-    Q -->|User Confirms 'Applied'| R[Record to Google Sheet]
+    I --> J["Stage 1: Tailor Agent - Draft in Jake's Template (output/resume.typ)"]
+    J --> K["Stage 2A: ATS Scanner Subagent"]
+    J --> L["Stage 2B: Harsh Recruiter Subagent"]
+    K & L --> S["output/feedback.md - Dual Critique"]
+    S & D --> M["Stage 3: Final Revisor Agent"]
+    M --> N["tools/compile_resume.sh"]
+    N --> O["output/resume.pdf - Strict 1 Page (Jake's Format)"]
+    M --> P["output/answers.md - Q&A Kit"]
+    O & P --> Q["User Review & Application Handoff"]
+    Q -->|"User Confirms 'Applied'"| R["Record to Google Sheet"]
     R --> F
 ```
 
@@ -88,7 +89,7 @@ flowchart TD
        --url "<JobURL>" \
        --status "Applied" \
        --score "<Score>" \
-       --resume-path "output/<company>/resume.pdf"
+       --resume-path "output/resume.pdf"
      ```
 
 ---
@@ -115,11 +116,22 @@ flowchart TD
 ### Workflow 4: The 3-Stage Actor-Critic Resume Tailoring Pipeline
 **When to run**: When tailoring a resume for a selected target job.
 
+#### Output Rule: Single Result File (No Subdirectories)
+- **Strict Rule**: Do NOT create per-internship subdirectories (e.g., `output/<company>/` or `output/<company>_<role>/`).
+- All active outputs reside directly in the root of `output/`:
+  - `output/resume.typ` (Typst source)
+  - `output/resume.pdf` (Single compiled result PDF)
+  - `output/feedback.md` (Critique and scanner audits)
+  - `output/answers.md` (Application Q&A kit)
+
 #### Stage 1: The Tailor Agent
 - **Instructions**: See [tailor_strategy.md](./prompts/tailor_strategy.md).
-- Draft a role-specific Typst resume source file at `output/<company>_<role>/resume.typ`.
-- Adhere strictly to the **Google XYZ formula** (`Accomplished [X] as measured by [Y] by doing [Z]`).
-- Lead with the most relevant projects and stack matching the job description.
+- **Template**: Adhere strictly to the **Jake's Resume** standard in Typst (`templates/resume_template.typ`).
+  - Monochromatic black-and-white, clean serif typography (`New Computer Modern`), full-width rules, standard single-column hierarchy.
+- **Drafting**:
+  - Draft the role-specific Typst source directly to `output/resume.typ`.
+  - Adhere strictly to Google's **XYZ formula** (`Accomplished [X] as measured by [Y] by doing [Z]`) and Harvard action verbs.
+  - Eliminate all orphan lines, personal pronouns, and soft-skill buzzwords.
 - **Rule of Integrity**: Never hallucinate unverified skills or experiences.
 
 #### Stage 2: Dual Critique (ATS Scanner + Harsh Recruiter)
@@ -127,31 +139,33 @@ Run two specialized evaluation lenses on the Stage 1 draft:
 
 1. **Subagent 2A: The ATS Scanner**
    - **Persona**: See [ats_scanner.md](./prompts/ats_scanner.md).
-   - Generates algorithmic score, keyword match matrix, and identifies missing required keywords.
+   - Guidelines: See [ats_guidelines.md](./references/ats_guidelines.md).
+   - Generates algorithmic score, keyword match matrix, and flags missing required keywords.
 
 2. **Subagent 2B: The Harsh Recruiter**
    - **Persona**: See [harsh_recruiter.md](./prompts/harsh_recruiter.md).
-   - Role-plays a cynical hiring manager with 10 seconds of attention.
-   - Tears apart passive voice, vague metrics, and tutorial clones.
+   - Rubric: See [recruiter_rubric.md](./references/recruiter_rubric.md).
+   - Adopts a cynical hiring manager persona with 10 seconds of attention.
+   - Evaluates Google XYZ compliance, engineering rigor, Harvard action verbs, and layout density.
    - Produces a brutal score (0-100) and line-by-line corrections.
 
-Save both critiques into `output/<company>_<role>/feedback.md`.
+Save both evaluations into `output/feedback.md`.
 
 #### Stage 3: The Final Revisor Agent
 - **Instructions**: See [revision_strategy.md](./prompts/revision_strategy.md).
 - Implement all valid critiques: inject missing keywords (where factual), replace weak verbs, and quantify metrics.
 - Compile the Typst source using the 1-page enforcement tool:
   ```bash
-  .agents/skills/internship-hunter/tools/compile_resume.sh output/<company>_<role>/resume.typ output/<company>_<role>/resume.pdf
+  .agents/skills/internship-hunter/tools/compile_resume.sh output/resume.typ output/resume.pdf
   ```
-- If the tool warns that the page budget was exceeded, adjust line spacing and word count until it is **strictly 1 single page**.
-- Generate `output/<company>_<role>/answers.md` containing pre-crafted answers for standard application questions ("Why this company?", "Challenging project").
+- If the tool warns that the page budget was exceeded, adjust spacing or phrasing until it is **strictly 1 single page**.
+- Generate `output/answers.md` containing pre-crafted answers for standard application questions ("Why this company?", "Challenging project").
 
 #### Stage 4: User Review & Application Handoff
 - Present the candidate with:
-  1. The compiled PDF path (`output/<company>_<role>/resume.pdf`) for inspection.
+  1. The compiled PDF path (`output/resume.pdf`) for inspection.
   2. The direct application URL.
-  3. Key application highlights and pre-drafted answers from `output/<company>_<role>/answers.md`.
+  3. Key application highlights and pre-drafted answers from `output/answers.md`.
 - Prompt the user to open the link, apply (using their preferred autofill tool/extension), and reply when submitted.
 
 #### Stage 5: Post-Application Google Sheets Sync & Batch Advancement
@@ -165,7 +179,7 @@ Save both critiques into `output/<company>_<role>/feedback.md`.
        --url "<JobURL>" \
        --status "Applied" \
        --score "<Score>" \
-       --resume-path "output/<company>_<role>/resume.pdf"
+       --resume-path "output/resume.pdf"
      ```
   2. If executing a multi-role queue or batch loop, immediately proceed to the next target role and start Stage 1 for the next opportunity.
 
@@ -182,4 +196,3 @@ Save both critiques into `output/<company>_<role>/feedback.md`.
    - If the user replaces `resume.pdf` with a new version, re-read the file.
    - Update `data/profile.yaml` while preserving any custom notes or user-refined metrics.
    - Keep `data/config.yaml` (roles, countries, sponsorship, Google Sheet settings) persistent across updates.
-
